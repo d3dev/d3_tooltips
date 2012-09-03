@@ -73,7 +73,7 @@ char *D3_ToolTip::init()
 {
     long pid = this->getProcID();
     if (pid == 0) return "'Diablo III' PID not found. Start the game and retry.";
-    this->hndl = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid); //PROCESS_ALL_ACCESS PROCESS_VM_READ
+    this->hndl = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, FALSE, pid);
     if (this->hndl == INVALID_HANDLE_VALUE) return "Unable to open D3 process. Do you have enough privilege ?";
     return NULL;
 }
@@ -92,7 +92,7 @@ void D3_ToolTip::run()
     {
         emit progress(i);
         s = VirtualQueryEx(this->hndl, (void *)i, &mbi, sizeof(MEMORY_BASIC_INFORMATION));
-        if(s != 0 && (mbi.Type == MEM_PRIVATE) && (mbi.State == MEM_COMMIT))
+        if(s != 0 && (mbi.Type == MEM_PRIVATE) && (mbi.State == MEM_COMMIT) && (mbi.Protect == PAGE_READWRITE))
         {
             size_t reg = (unsigned int)mbi.RegionSize;
             char *buffer = (char *)malloc(reg);
@@ -123,7 +123,6 @@ void D3_ToolTip::run()
 bool D3_ToolTip::chkUnik(char *buffer, int offset)
 {
     int addr[] = {0x458, 0x490, 0xAD8, 0xB10, 0xB60, 0xBB0};
-    if (memcmp(unik0, ((char *)buffer + offset + 0xBB0), 4) != 0) return false;
     for (int i = 0; i < 6; i++)
     {
         if (memcmp(unik0, ((char *)buffer + offset + addr[i]), 4) != 0) return false;
