@@ -9,9 +9,11 @@ TEMPLATE = app
 SOURCES += main.cpp \
     Widget.cpp \
     D3_ToolTip.cpp \
-    TableWidget.cpp
+    TableWidget.cpp \
+    D3_Export.cpp
 HEADERS += Widget.h \
     D3_ToolTip.h \
-    TableWidget.h
+    TableWidget.h \
+    D3_Export.h
 FORMS += Widget.ui
 win32:LIBS += -luser32
