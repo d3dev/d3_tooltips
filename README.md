@@ -1,7 +1,8 @@
 d3_tooltips
 ===========
 
-Utility to export d3 items stats to a more user-friendly format
+Utility to export d3 items stats to a more user-friendly format.
+<a href="https://github.com/d3dev/d3_tooltips/How%20it%20works">How it works (Wiki page)</a>
 
 YouTube Demo : http://youtu.be/kqZ0Jgw7tOo
 
