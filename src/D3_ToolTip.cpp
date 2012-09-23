@@ -245,9 +245,14 @@ bool D3_ToolTip::makeItem(QString custom)
         str[2047] = '\0';
 
         sluged = slug(str);
-        si->setText(QString::fromUtf8(sluged));
-        if (show == 0) si->setData(QString("{Qt:DEBUG:hidden}") + QString::fromUtf8(str), Qt::UserRole);
-        else si->setData(QString::fromUtf8(str), Qt::UserRole);
+        if (show == 0)
+        {
+            si->setText("");
+            si->setData(QString("{Qt:DEBUG:hidden}") + QString::fromUtf8(str), Qt::UserRole);
+        } else {
+            si->setText(QString::fromUtf8(sluged));
+            si->setData(QString::fromUtf8(str), Qt::UserRole);
+        }
         l.append(si);
         free(sluged);
     }

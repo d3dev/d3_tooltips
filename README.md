@@ -24,6 +24,9 @@ You can use MinGW if you want. (with a few fairly minor technical adjustments).
 
 Changelog
 ---------
+ - v0.3
+  - Better hidden fields management
+  - More verbose error when hotkey registration fail
  - v0.2
   - Memory scan improvements, taking care of segmentation
   - New ToolTips support : D3_SOCKET_0, D3_SOCKET_1, D3_SOCKET_2, D3_SOCKET_COST, D3_ITEM_LEVEL, D3_FLAVOR, D3_SET_ITEM, D3_ENHANCEMENT, D3_INSTRUCTION

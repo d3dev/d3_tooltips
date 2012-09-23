@@ -78,8 +78,22 @@ void Widget::on_scanCompleted()
 
 void Widget::addHotkey()
 {
-    RegisterHotKey(winId(), 1, MOD_ALT | MOD_NOREPEAT, 0x42);
-    ui->label_err_3->setText("<span style='font-size:14pt; font-weight:600; color:#00aa00;'>OK</span>");
+    LPVOID lpMsgBuf;
+    DWORD rcode;
+    if (RegisterHotKey(winId(), 1, MOD_ALT | MOD_NOREPEAT, 0x42) == 0)
+    {
+        ui->label_err_3->setText("<span style='font-size:14pt; font-weight:600; color:#aa0000;'>KO</span>");
+        //It's possible that the code that sets up a throw calls a Win32 API function inside itself somewhere,
+        //that resets the Last-Error value to 0. This may be happening before your call to error_message().
+        RegisterHotKey(winId(), 1, MOD_ALT | MOD_NOREPEAT, 0x42);
+        rcode = GetLastError();
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL, rcode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &lpMsgBuf, 0, NULL);
+        ui->checkBox_2->setText(QString("Error %1 : %2").arg(rcode).arg(QString::fromUtf16((LPCTSTR)lpMsgBuf)));
+        LocalFree(lpMsgBuf);
+    } else {
+        ui->label_err_3->setText("<span style='font-size:14pt; font-weight:600; color:#00aa00;'>OK</span>");
+    }
 }
 
 bool Widget::winEvent(MSG* message, long* result)
