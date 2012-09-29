@@ -24,6 +24,9 @@ You can use MinGW if you want. (with a few fairly minor technical adjustments).
 
 Changelog
 ---------
+ - v0.4
+  - Slightly wider scanned memory range
+  - New branch for PTR (Public Test Realm 1.0.5)
  - v0.3
   - Better hidden fields management
   - More verbose error when hotkey registration fail

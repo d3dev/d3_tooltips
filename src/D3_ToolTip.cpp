@@ -108,7 +108,7 @@ void D3_ToolTip::run()
     SYSTEM_INFO si;
     GetSystemInfo(&si);
     unsigned int min = 0x06000000; //(unsigned int)si.lpMinimumApplicationAddress; //0x06000000
-    unsigned int max = 0x30000000; //(unsigned int)si.lpMaximumApplicationAddress; //0x30000000
+    unsigned int max = 0x40000000; //(unsigned int)si.lpMaximumApplicationAddress; //0x30000000
 
 
 
@@ -211,9 +211,25 @@ bool D3_ToolTip::makeItem(QString custom)
     for(unsigned char e = 0; e < ENUM_END; e++)
     {
         si = new QStandardItem();
+#ifndef DEBUG
         if (this->ptr[e] == NULL) return false;
         if (ptr_count[e] != 1) return false;
-        //if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x5DC), &show, sizeof(int), NULL))
+#else
+        if (this->ptr[e] == NULL)
+        {
+            si->setText("");
+            si->setData("{Qt:DEBUG:NullPtr}", Qt::UserRole);
+            l.append(si);
+            continue;
+        }
+        if (ptr_count[e] != 1)
+        {
+            si->setText("");
+            si->setData(QString("{Qt:DEBUG:MultiplePtr}%1").arg(ptr_count[e]), Qt::UserRole);
+            l.append(si);
+            continue;
+        }
+#endif
         if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0xAA0), &show, sizeof(int), NULL))
         {
             si->setText("");
