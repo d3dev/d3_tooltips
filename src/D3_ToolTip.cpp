@@ -56,13 +56,13 @@ const unsigned char D3_ToolTip::parent_hash[20][8] = {
 
 const unsigned char D3_ToolTip::unik0[4] = {
     0x0D, 0xF0, 0x0D, 0x60
-};// at {0x458, 0x490, 0xAD8, 0xB10, 0xB60, 0xBB0}
+};// at {0x458, 0x490, 0xAF0, 0xB28, 0xB78, 0xBC8}
 
 const unsigned char D3_ToolTip::unik1[24] = {
     0x00, 0x00, 0x00, 0xFF, 0x7F, 0x7F, 0x7F, 0xFF,
     0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};// at {0xBEC}
+};// at {0xC04}
 
 D3_ToolTip::D3_ToolTip()
 {
@@ -134,7 +134,7 @@ void D3_ToolTip::run()
                 {
                     if((memcmp(this->hash[e], (buffer + offset), 8) == 0) && (memcmp(this->parent_hash[e], (buffer + offset + 0x208), 8) == 0) && this->chkUnik(buffer, offset))
                     {
-                        this->ptr[e] = (int)mbi.BaseAddress - prevlen + offset + 0xA98;
+                        this->ptr[e] = (int)mbi.BaseAddress - prevlen + offset + 0xC1C;
                         this->ptr_count[e]++;
                         break;
                     }
@@ -164,12 +164,12 @@ void D3_ToolTip::run()
 
 bool D3_ToolTip::chkUnik(char *buffer, int offset)
 {
-    int addr[] = {0x458, 0x490, 0xAD8, 0xB10, 0xB60, 0xBB0};
+    int addr[] = {0x458, 0x490, 0xAF0, 0xB28, 0xB78, 0xBC8};
     for (int i = 0; i < 6; i++)
     {
         if (memcmp(unik0, ((char *)buffer + offset + addr[i]), 4) != 0) return false;
     }
-    if (memcmp(unik1, ((char *)buffer + offset + 0xBEC), 24) != 0) return false;
+    if (memcmp(unik1, ((char *)buffer + offset + 0xC04), 24) != 0) return false;
     return true;
 }
 
@@ -230,7 +230,9 @@ bool D3_ToolTip::makeItem(QString custom)
             continue;
         }
 #endif
-        if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0xAA0), &show, sizeof(int), NULL))
+
+        //if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x5DC), &show, sizeof(int), NULL))
+        if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - (0xC1C + 8)), &show, sizeof(int), NULL))
         {
             si->setText("");
             si->setData("{Qt:DEBUG:RPM1Failed}", Qt::UserRole);

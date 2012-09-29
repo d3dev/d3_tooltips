@@ -42,7 +42,7 @@ void Widget::on_checkBox_2_clicked()
         ui->checkBox_2->setText("Scan pending. Please wait.");
     } else {
         ui->checkBox_2->setText("Please wait while memory is scanned.");
-        ui->progressBar->setValue(100663296);
+        ui->progressBar->setValue(0x06000000);
         connect(d3_tooltip, SIGNAL(progress(int)), ui->progressBar, SLOT(setValue(int)));
         connect(d3_tooltip, SIGNAL(finished()), this, SLOT(on_scanCompleted()));
         d3_tooltip->start();
@@ -53,7 +53,7 @@ void Widget::on_scanCompleted()
 {
     //int n = 0;
     QList<QStandardItem *> items;
-    ui->progressBar->setValue(805306368);
+    ui->progressBar->setValue(0x40000000);
     if (!d3_tooltip->makeItem(ui->lineEdit->text()))
     {
         ui->label_err_2->setText("<span style='font-size:14pt; font-weight:600; color:#aa0000;'>KO</span>");
