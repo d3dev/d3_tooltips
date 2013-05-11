@@ -24,6 +24,10 @@ You can use MinGW if you want. (with a few fairly minor technical adjustments).
 
 Changelog
 ---------
+ - v1.4
+  - Stable release, 6+ months validation, no update needed from 1.0.5 to 1.0.8+
+  - Patch agnostic feature verified
+  - PTR branch has been merged to master
  - v0.4
   - Slightly wider scanned memory range
   - New branch for PTR (Public Test Realm 1.0.5)
