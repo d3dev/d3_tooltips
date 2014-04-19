@@ -5,7 +5,7 @@ const char *D3_ToolTip::type_string[ENUM_END] = {
     "D3_NAME", "D3_TYPE", "D3_SLOT", "D3_RATING", "D3_RATING_LABEL", "D3_SPECIAL_STATS",
     "D3_STATS", "D3_REQUIRED_LEVEL", "D3_COST", "D3_DURABILITY", "D3_REQUIRED_CLASS",
     "D3_SOCKET_0", "D3_SOCKET_1", "D3_SOCKET_2", "D3_SOCKET_COST", "D3_ITEM_LEVEL",
-    "D3_FLAVOR", "D3_SET_ITEM", "D3_ENHANCEMENT", "D3_INSTRUCTION"
+    "D3_FLAVOR", "D3_SET_ITEM", "D3_DYE", "D3_INSTRUCTION"
 };
 
 const unsigned char D3_ToolTip::hash[20][8] = {
@@ -27,7 +27,7 @@ const unsigned char D3_ToolTip::hash[20][8] = {
     {0x81, 0x1C, 0x33, 0x40, 0xC3, 0x30, 0x58, 0x90}, //D3_ITEM_LEVEL       Root.TopLayer.item 2.stack.frame body.stack.wrapper.itemLevel
     {0xB5, 0x10, 0x06, 0x11, 0x24, 0x70, 0xCB, 0x25}, //D3_FLAVOR           Root.TopLayer.item 2.stack.frame body.stack.flavor
     {0x87, 0x0F, 0x11, 0x37, 0x93, 0x9F, 0x39, 0x30}, //D3_SET_ITEM         Root.TopLayer.item 2.stack.frame body.stack.set_item
-    {0xF5, 0x1C, 0x98, 0xC2, 0x3F, 0xFD, 0x22, 0xDB}, //D3_ENHANCEMENT      Root.TopLayer.item 2.stack.frame body.stack.enhancement
+    {0x85, 0xC3, 0x9E, 0x42, 0xE5, 0x1F, 0xC9, 0x53}, //D3_DYE              Root.TopLayer.item 2.stack.frame body.stack.dye
     {0x0D, 0x53, 0x98, 0xDF, 0x78, 0x46, 0xCE, 0xF7}  //D3_INSTRUCTION      Root.TopLayer.item 2.stack.frame_instruction.stack.text
 }; // begin with
 
@@ -50,19 +50,19 @@ const unsigned char D3_ToolTip::parent_hash[20][8] = {
     {0x28, 0xE3, 0xDD, 0xFA, 0x7A, 0xB5, 0x7A, 0x4F}, //D3_ITEM_LEVEL       Root.TopLayer.item 2.stack.frame body.stack.wrapper
     {0xC5, 0x34, 0x83, 0xCF, 0x13, 0x78, 0xCC, 0x6F}, //D3_FLAVOR           Root.TopLayer.item 2.stack.frame body.stack
     {0xC5, 0x34, 0x83, 0xCF, 0x13, 0x78, 0xCC, 0x6F}, //D3_SET_ITEM         Root.TopLayer.item 2.stack.frame body.stack
-    {0xC5, 0x34, 0x83, 0xCF, 0x13, 0x78, 0xCC, 0x6F}, //D3_ENHANCEMENT      Root.TopLayer.item 2.stack.frame body.stack
+    {0xC5, 0x34, 0x83, 0xCF, 0x13, 0x78, 0xCC, 0x6F}, //D3_DYE              Root.TopLayer.item 2.stack.frame body.stack
     {0xF4, 0xCA, 0x04, 0x11, 0xFD, 0xBA, 0x44, 0xAC}  //D3_INSTRUCTION      Root.TopLayer.item 2.stack.frame_instruction.stack
 }; // at {0x210}
 
 const unsigned char D3_ToolTip::unik0[4] = {
     0x0D, 0xF0, 0x0D, 0x60
-};// at {0x458, 0x490, 0xAF0, 0xB28, 0xB78, 0xBC8}
+};// at {0x458, 0xA68, 0xAA8, 0xAF8, 0xB50, 0xBD0}
 
 const unsigned char D3_ToolTip::unik1[24] = {
     0x00, 0x00, 0x00, 0xFF, 0x7F, 0x7F, 0x7F, 0xFF,
     0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};// at {0xC04}
+};// at {0xBF4}
 
 D3_ToolTip::D3_ToolTip()
 {
@@ -132,9 +132,12 @@ void D3_ToolTip::run()
             {
                 for(unsigned char e = 0; e < ENUM_END; e++)
                 {
+                    //ToolTip hash is at [offset + 0]
+                    //ToolTip parent hash is at [offset + 0x208]
                     if((memcmp(this->hash[e], (buffer + offset), 8) == 0) && (memcmp(this->parent_hash[e], (buffer + offset + 0x208), 8) == 0) && this->chkUnik(buffer, offset))
                     {
-                        this->ptr[e] = (int)mbi.BaseAddress - prevlen + offset + 0xC1C;
+                        //String pointer is at [offset + 0xC0C]
+                        this->ptr[e] = (int)mbi.BaseAddress - prevlen + offset + 0xC0C;
                         this->ptr_count[e]++;
                         break;
                     }
@@ -164,12 +167,12 @@ void D3_ToolTip::run()
 
 bool D3_ToolTip::chkUnik(char *buffer, int offset)
 {
-    int addr[] = {0x458, 0x490, 0xAF0, 0xB28, 0xB78, 0xBC8};
+    int addr[] = {0x458, 0xA68, 0xAA8, 0xAF8, 0xB50, 0xBD0};
     for (int i = 0; i < 6; i++)
     {
         if (memcmp(unik0, ((char *)buffer + offset + addr[i]), 4) != 0) return false;
     }
-    if (memcmp(unik1, ((char *)buffer + offset + 0xC04), 24) != 0) return false;
+    if (memcmp(unik1, ((char *)buffer + offset + 0xBF4), 24) != 0) return false;
     return true;
 }
 
@@ -231,8 +234,8 @@ bool D3_ToolTip::makeItem(QString custom)
         }
 #endif
 
-        //if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x5DC), &show, sizeof(int), NULL))
-        if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - (0xC1C + 8)), &show, sizeof(int), NULL))
+        //0x780 bytes before the string pointer, a flag define the state of the string (visible / hidden)
+        if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x780), &show, sizeof(int), NULL))
         {
             si->setText("");
             si->setData("{Qt:DEBUG:RPM1Failed}", Qt::UserRole);
