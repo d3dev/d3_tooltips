@@ -24,6 +24,9 @@ You can use MinGW if you want. (with a few fairly minor technical adjustments).
 
 Changelog
 ---------
+ - v2.0
+  - Support Diablo III Reaper of Souls
+  - New ToolTip support : D3_DYE
  - v1.4
   - Stable release, 6+ months validation, no update needed from 1.0.5 to 1.0.8+
   - Patch agnostic feature verified
