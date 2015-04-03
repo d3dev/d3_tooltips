@@ -56,13 +56,13 @@ const unsigned char D3_ToolTip::parent_hash[20][8] = {
 
 const unsigned char D3_ToolTip::unik0[4] = {
     0x0D, 0xF0, 0x0D, 0x60
-};// at {0x458, 0xA68, 0xAA8, 0xAF8, 0xB50, 0xBD0}
+};// at {0x458, 0xA68, 0xAB0, 0xB00, 0xB60, 0xBE8}
 
 const unsigned char D3_ToolTip::unik1[24] = {
     0x00, 0x00, 0x00, 0xFF, 0x7F, 0x7F, 0x7F, 0xFF,
     0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};// at {0xBF4}
+};// at {0xC14}
 
 D3_ToolTip::D3_ToolTip()
 {
@@ -136,8 +136,8 @@ void D3_ToolTip::run()
                     //ToolTip parent hash is at [offset + 0x208]
                     if((memcmp(this->hash[e], (buffer + offset), 8) == 0) && (memcmp(this->parent_hash[e], (buffer + offset + 0x208), 8) == 0) && this->chkUnik(buffer, offset))
                     {
-                        //String pointer is at [offset + 0xC0C]
-                        this->ptr[e] = (int)mbi.BaseAddress - prevlen + offset + 0xC0C;
+                        //String pointer is at [offset + 0xC2C]
+                        this->ptr[e] = (int)mbi.BaseAddress - prevlen + offset + 0xC2C;
                         this->ptr_count[e]++;
                         break;
                     }
@@ -167,12 +167,12 @@ void D3_ToolTip::run()
 
 bool D3_ToolTip::chkUnik(char *buffer, int offset)
 {
-    int addr[] = {0x458, 0xA68, 0xAA8, 0xAF8, 0xB50, 0xBD0};
+    int addr[] = {0x458, 0xA68, 0xAB0, 0xB00, 0xB60, 0xBE8};
     for (int i = 0; i < 6; i++)
     {
         if (memcmp(unik0, ((char *)buffer + offset + addr[i]), 4) != 0) return false;
     }
-    if (memcmp(unik1, ((char *)buffer + offset + 0xBF4), 24) != 0) return false;
+    if (memcmp(unik1, ((char *)buffer + offset + 0xC14), 24) != 0) return false;
     return true;
 }
 
@@ -234,8 +234,8 @@ bool D3_ToolTip::makeItem(QString custom)
         }
 #endif
 
-        //0x780 bytes before the string pointer (0xC0C - 0x48C), a flag define the state of the string (visible / hidden)
-        if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x780), &show, sizeof(int), NULL))
+        //0x784 bytes before the string pointer (0xC2C - 0x4A8), a flag define the state of the string (visible / hidden)
+        if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x784), &show, sizeof(int), NULL))
         {
             si->setText("");
             si->setData("{Qt:DEBUG:RPM1Failed}", Qt::UserRole);
