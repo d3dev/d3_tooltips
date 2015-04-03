@@ -24,6 +24,9 @@ You can use MinGW if you want. (with a few fairly minor technical adjustments).
 
 Changelog
 ---------
+ - v2.1
+  - Fix #5 (new memory layout broke path agnosticism)
+  - Support Diablo III Reaper of Souls v2.1.2.28709
  - v2.0
   - Support Diablo III Reaper of Souls
   - New ToolTip support : D3_DYE
