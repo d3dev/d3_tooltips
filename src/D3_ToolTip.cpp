@@ -234,7 +234,7 @@ bool D3_ToolTip::makeItem(QString custom)
         }
 #endif
 
-        //0x780 bytes before the string pointer, a flag define the state of the string (visible / hidden)
+        //0x780 bytes before the string pointer (0xC0C - 0x48C), a flag define the state of the string (visible / hidden)
         if (! ReadProcessMemory(this->hndl, (LPVOID) (this->ptr[e] - 0x780), &show, sizeof(int), NULL))
         {
             si->setText("");
